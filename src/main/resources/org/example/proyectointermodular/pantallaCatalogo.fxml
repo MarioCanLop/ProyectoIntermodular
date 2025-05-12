@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.proyectointermodular.PantallaCatalogo">
+    <children>
+        <VBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="626.0" prefWidth="906.0" spacing="20.0">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+            <children>
+                <TableView fx:id="tablaEstudiantes" prefHeight="200.0" prefWidth="200.0">
+                    <columns>
+                        <TableColumn fx:id="idTable" prefWidth="158.4000244140625" text="CatalogoID" />
+                        <TableColumn fx:id="nombreTable" prefWidth="113.59993934631348" text="Nombre" />
+                        <TableColumn fx:id="descripcionTable" prefWidth="190.39996337890625" text="Descripción" />
+                    </columns>
+                </TableView>
+                <HBox alignment="CENTER" layoutX="30.0" layoutY="439.0" prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="editarBotton" onAction="#onEditarButtonClick" text="Editar" />
+                        <Button fx:id="eliminarBotton" layoutX="10.0" layoutY="10.0" onAction="#onEliminarButtonClick" text="Eliminar" />
+                    </children>
+                </HBox>
+                <Label fx:id="welcomeText" />
+                <TextField fx:id="nombreTextField" promptText="Introduce un Nombre" />
+                <TextField fx:id="descripcionTextField" layoutX="30.0" layoutY="362.0" promptText="Introduce una Descripcion" />
+                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="anyadirButton" onAction="#onAnyadirButtonClick" text="Añadir" />
+                        <Button fx:id="guardarButton" disable="true" layoutX="10.0" layoutY="10.0" onAction="#onGuardarButtonClick" text="Guardar" />
+                    </children>
+                </HBox>
+                <Button fx:id="buttonInicio" mnemonicParsing="false" onAction="#buttonInicio" text="Volver Al Inicio" />
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>
