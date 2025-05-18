@@ -11,6 +11,8 @@ module org.example.proyectointermodular {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires com.google.errorprone.annotations;
+    requires java.sql;
+    requires java.desktop;
 
     opens org.example.proyectointermodular to javafx.fxml;
     exports org.example.proyectointermodular;

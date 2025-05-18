@@ -1,25 +1,20 @@
 package org.example.proyectointermodular.Objetos;
 
-public class Artistas {
+public class Asistentes {
 
-    private String nombre ;
-    private String biografia;
-    private String telefono ;
+    private String nombre;
+    private String telefono;
     private String email;
 
-    public Artistas(String nombre, String biografia, String telefono, String email) {
+
+    public Asistentes(String nombre, String telefono, String email) {
         this.nombre = nombre;
-        this.biografia = biografia;
         this.telefono = telefono;
         this.email = email;
     }
 
     public String getNombre() {
         return nombre;
-    }
-
-    public String getBiografia() {
-        return biografia;
     }
 
     public String getTelefono() {
@@ -32,9 +27,8 @@ public class Artistas {
 
     @Override
     public String toString() {
-        return "Artistas{" +
+        return "Asistentes{" +
                 "nombre='" + nombre + '\'' +
-                ", biografia='" + biografia + '\'' +
                 ", telefono='" + telefono + '\'' +
                 ", email='" + email + '\'' +
                 '}';
