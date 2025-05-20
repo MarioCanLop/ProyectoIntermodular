@@ -1,13 +1,14 @@
 package org.example.proyectointermodular;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import org.example.proyectointermodular.Matenimiento.Conexiones;
+import org.example.proyectointermodular.Matenimiento.MantenimientoArtistas;
 import org.example.proyectointermodular.Objetos.Artistas;
 
 import java.io.IOException;
+import java.sql.Connection;
 
 
 public class PantallaArtistas {
@@ -65,11 +66,11 @@ public class PantallaArtistas {
 
     @FXML
     public void initialize() {
-        conexion = org.example.practica2_javafx.Mantenimiento.conectar();
+        conexion = Conexiones.conectar();
 
         tablaArtistas.setItems(MantenimientoArtistas.consultar(conexion));
 
-        idTable.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getId()));
+        idTable.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getArtistaid()));
         nombreTable.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getNombre()));
         biografiaTable.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getBiografia()));
         telefonoTable.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getTelefono()));
@@ -83,7 +84,13 @@ public class PantallaArtistas {
         String telefono = telefonoTextField.getText();
         String email = emailTextField.getText();
 
-        Artistas artista = new Artistas(nombre, biografia, telefono, email);
+        Artistas artista;
+
+        if (biografia == null) {
+            artista = new Artistas(nombre, email, telefono);
+        }else {
+            artista = new Artistas(nombre, biografia, email, telefono);
+        }
 
         MantenimientoArtistas.insertar(conexion, artista);
 
@@ -101,7 +108,13 @@ public class PantallaArtistas {
         String telefono = telefonoTextField.getText();
         String email = emailTextField.getText();
 
-        Artistas artista = new Artistas(nombre, biografia, telefono, email);
+        Artistas artista;
+
+        if (biografia == null) {
+            artista = new Artistas(nombre, email, telefono);
+        }else {
+            artista = new Artistas(nombre, biografia, email, telefono);
+        }
 
         MantenimientoArtistas.modificar(conexion, artista, idAnterior);
 
@@ -111,25 +124,29 @@ public class PantallaArtistas {
 
     @FXML
     protected void onEliminarButtonClick() {
-        Artistas seleccionado = tablaArtistas.getSelectionModel().getSelectedItem();
-        if (seleccionado != null) {
-            MantenimientoArtistas.borrar(conexion, seleccionado);
-            tablaArtistas.setItems(MantenimientoArtistas.consultar(conexion));
+        Artistas artista = tablaArtistas.getSelectionModel().getSelectedItem();
+
+        if (artista != null) {
+            int id_borrar = artista.getArtistaid();
+            MantenimientoArtistas.borrar(conexion, id_borrar);
         } else {
             System.out.println("No hay ningún artista seleccionado.");
         }
+
+        tablaArtistas.setItems(MantenimientoArtistas.consultar(conexion));
     }
 
     @FXML
     protected void onEditarButtonClick() {
+
         Artistas seleccionado = tablaArtistas.getSelectionModel().getSelectedItem();
+
         if (seleccionado != null) {
             anyadirButton.setDisable(true);
             guardarButton.setDisable(false);
-            idAnterior = seleccionado.getId();
+            idAnterior = seleccionado.getArtistaid();
 
             nombreTextField.setText(seleccionado.getNombre());
-            biografiaTextField.setText(seleccionado.getBiografia());
             telefonoTextField.setText(seleccionado.getTelefono());
             emailTextField.setText(seleccionado.getEmail());
         } else {
@@ -137,16 +154,18 @@ public class PantallaArtistas {
         }
     }
 
-    @FXML
-    protected void buttonInicio() throws IOException {
-        HelloApplication.setRoot("hello-view");
-        System.out.println("Volviendo al inicio...");
-    }
+
 
     private void limpiarCampos() {
         nombreTextField.clear();
         biografiaTextField.clear();
         telefonoTextField.clear();
         emailTextField.clear();
+    }
+
+    @FXML
+    protected void buttonInicio() throws IOException {
+        HelloApplication.setRoot("hello-view");
+        System.out.println("Volviendo al inicio...");
     }
 }

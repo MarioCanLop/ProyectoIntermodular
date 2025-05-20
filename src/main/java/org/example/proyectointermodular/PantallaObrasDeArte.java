@@ -2,13 +2,16 @@ package org.example.proyectointermodular;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import org.example.proyectointermodular.Matenimiento.MantenimientoAsistentes;
 import org.example.proyectointermodular.Matenimiento.MantenimientoObras;
 import org.example.proyectointermodular.Matenimiento.MantenimientoObras;
 import org.example.proyectointermodular.Objetos.ObrasDeArte;
 
 import java.io.IOException;
+import java.sql.Connection;
 
 public class PantallaObrasDeArte {
 
@@ -40,121 +43,39 @@ public class PantallaObrasDeArte {
     @FXML
     private Button guardarButton;
 
-    private int idSeleccionado = -1;
+    private String nomSelect;
+    private Connection conexion;
 
     @FXML
     public void initialize() {
-        // Asume que tienes una clase MantenimientoObras con métodos para CRUD
+        conexion = MantenimientoAsistentes.conectar(conexion);
 
-        // Configurar columnas
-        idTable.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(MantenimientoObras.obtenerId(data.getValue())));
+
         tituloTable.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getTitulo()));
         descripcionTable.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getDescripcion()));
         disponibleTable.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getDisponible()));
         precioTable.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getPrecio()));
 
         // Cargar datos en la tabla
-        tablaEstudiantes.setItems(MantenimientoObras.consultar());
+        tablaEstudiantes.setItems(MantenimientoObras.consultar(conexion));
     }
 
     @FXML
-    public void onAnyadirButtonClick() {
-        String titulo = TituloTextField.getText().trim();
-        String descripcion = descripcionTextField.getText().trim();
-        String disponible = DisponibleTextField.getText().trim();
-        String precioStr = precioTextField.getText().trim();
-
-        if (titulo.isEmpty() || descripcion.isEmpty() || disponible.isEmpty() || precioStr.isEmpty()) {
-            mostrarAlerta("Error", "Todos los campos deben estar completos.");
-            return;
-        }
-
-        int precio;
-        try {
-            precio = Integer.parseInt(precioStr);
-        } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "Precio debe ser un número entero.");
-            return;
-        }
-
-        ObrasDeArte obra = new ObrasDeArte(titulo, descripcion, disponible, precio);
-        MantenimientoObras.insertar(obra);
-
-        limpiarCampos();
-        tablaEstudiantes.setItems(MantenimientoObras.consultar());
+    protected void buttonInicio() throws IOException {
+        HelloApplication.setRoot("hello-view");
+        System.out.println("Volviendo al inicio...");
     }
 
-    @FXML
-    public void onEditarButtonClick() {
-        ObrasDeArte seleccionado = tablaEstudiantes.getSelectionModel().getSelectedItem();
-        if (seleccionado != null) {
-            idSeleccionado = MantenimientoObras.obtenerId(seleccionado);
-
-            TituloTextField.setText(seleccionado.getTitulo());
-            descripcionTextField.setText(seleccionado.getDescripcion());
-            DisponibleTextField.setText(seleccionado.getDisponible());
-            precioTextField.setText(String.valueOf(seleccionado.getPrecio()));
-
-            anyadirButton.setDisable(true);
-            guardarButton.setDisable(false);
-        }
+    public void onEditarButtonClick(ActionEvent actionEvent) {
     }
 
-    @FXML
-    public void onGuardarButtonClick() {
-        String titulo = TituloTextField.getText().trim();
-        String descripcion = descripcionTextField.getText().trim();
-        String disponible = DisponibleTextField.getText().trim();
-        String precioStr = precioTextField.getText().trim();
-
-        if (titulo.isEmpty() || descripcion.isEmpty() || disponible.isEmpty() || precioStr.isEmpty()) {
-            mostrarAlerta("Error", "Todos los campos deben estar completos.");
-            return;
-        }
-
-        int precio;
-        try {
-            precio = Integer.parseInt(precioStr);
-        } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "Precio debe ser un número entero.");
-            return;
-        }
-
-        ObrasDeArte obra = new ObrasDeArte(titulo, descripcion, disponible, precio);
-        MantenimientoObras.modificar(obra, idSeleccionado);
-
-        limpiarCampos();
-        anyadirButton.setDisable(false);
-        guardarButton.setDisable(true);
-        tablaEstudiantes.setItems(MantenimientoObras.consultar());
+    public void onEliminarButtonClick(ActionEvent actionEvent) {
     }
 
-    @FXML
-    public void onEliminarButtonClick() {
-        ObrasDeArte seleccionado = tablaEstudiantes.getSelectionModel().getSelectedItem();
-        if (seleccionado != null) {
-            MantenimientoObras.borrar(seleccionado);
-            tablaEstudiantes.setItems(MantenimientoObras.consultar());
-        }
+    public void onAnyadirButtonClick(ActionEvent actionEvent) {
     }
 
-    @FXML
-    public void buttonInicio() throws IOException {
-        HelloApplication.setRoot("hello-view");    }
+    public void onGuardarButtonClick(ActionEvent actionEvent) {
 
-    private void limpiarCampos() {
-        TituloTextField.clear();
-        descripcionTextField.clear();
-        DisponibleTextField.clear();
-        precioTextField.clear();
-    }
-
-    private void mostrarAlerta(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
     }
 }
-

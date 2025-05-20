@@ -3,8 +3,10 @@ package org.example.proyectointermodular;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import org.example.proyectointermodular.Matenimiento.MantenimientoFerias;
 import org.example.proyectointermodular.Objetos.Ferias;
 
 import java.io.IOException;
@@ -49,10 +51,9 @@ public class PantallaFerias {
 
     @FXML
     public void initialize() {
-        conexion = MantenimientoFerias.conectar();
+        conexion = MantenimientoFerias.conectar(conexion);
 
         // Configurar las columnas
-        idTable.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(MantenimientoFerias.obtenerId(data.getValue())));
         nombreTable.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getNombre()));
         fechaInicioTable.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getFehcaInicio()));
         fechaFinTable.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getFechaFin()));
@@ -63,100 +64,23 @@ public class PantallaFerias {
     }
 
     @FXML
-    public void onAnyadirButtonClick() {
-        String nombre = nombreTextField.getText().trim();
-        LocalDate fechaInicio = fechaIncioDatePicker.getValue();
-        LocalDate fechaFin = fechaFinDatePicker.getValue();
-        String ubicacion = ubicacionTextField.getText().trim();
-        String descripcion = DescripciónTextField.getText().trim();
-
-        if (nombre.isEmpty() || fechaInicio == null || fechaFin == null || ubicacion.isEmpty() || descripcion.isEmpty()) {
-            mostrarAlerta("Error", "Todos los campos deben estar completos.");
-            return;
-        }
-        if (fechaFin.isBefore(fechaInicio)) {
-            mostrarAlerta("Error", "La fecha fin no puede ser anterior a la fecha inicio.");
-            return;
-        }
-
-        Ferias feria = new Ferias(nombre, fechaInicio, fechaFin, ubicacion, descripcion);
-        MantenimientoFerias.insertar(conexion, feria);
-
-        limpiarCampos();
-        tablaEstudiantes.setItems(MantenimientoFerias.consultar(conexion));
-    }
-
-    @FXML
-    public void onEditarButtonClick() {
-        Ferias seleccionado = tablaEstudiantes.getSelectionModel().getSelectedItem();
-        if (seleccionado != null) {
-            idSeleccionado = MantenimientoFerias.obtenerId(seleccionado);
-
-            nombreTextField.setText(seleccionado.getNombre());
-            fechaIncioDatePicker.setValue(seleccionado.getFehcaInicio());
-            fechaFinDatePicker.setValue(seleccionado.getFechaFin());
-            ubicacionTextField.setText(seleccionado.getUbicacion());
-            DescripciónTextField.setText(seleccionado.getDescripcion());
-
-            anyadirButton.setDisable(true);
-            guardarButton.setDisable(false);
-        }
-    }
-
-    @FXML
-    public void onGuardarButtonClick() {
-        String nombre = nombreTextField.getText().trim();
-        LocalDate fechaInicio = fechaIncioDatePicker.getValue();
-        LocalDate fechaFin = fechaFinDatePicker.getValue();
-        String ubicacion = ubicacionTextField.getText().trim();
-        String descripcion = DescripciónTextField.getText().trim();
-
-        if (nombre.isEmpty() || fechaInicio == null || fechaFin == null || ubicacion.isEmpty() || descripcion.isEmpty()) {
-            mostrarAlerta("Error", "Todos los campos deben estar completos.");
-            return;
-        }
-        if (fechaFin.isBefore(fechaInicio)) {
-            mostrarAlerta("Error", "La fecha fin no puede ser anterior a la fecha inicio.");
-            return;
-        }
-
-        Ferias feria = new Ferias(nombre, fechaInicio, fechaFin, ubicacion, descripcion);
-        MantenimientoFerias.modificar(conexion, feria, idSeleccionado);
-
-        limpiarCampos();
-        anyadirButton.setDisable(false);
-        guardarButton.setDisable(true);
-        tablaEstudiantes.setItems(MantenimientoFerias.consultar(conexion));
-    }
-
-    @FXML
-    public void onEliminarButtonClick() {
-        Ferias seleccionado = tablaEstudiantes.getSelectionModel().getSelectedItem();
-        if (seleccionado != null) {
-            MantenimientoFerias.borrar(conexion, seleccionado);
-            tablaEstudiantes.setItems(MantenimientoFerias.consultar(conexion));
-        }
-    }
-
-    @FXML
-    public void buttonInicio() throws IOException {
+    protected void buttonInicio() throws IOException {
         HelloApplication.setRoot("hello-view");
+        System.out.println("Volviendo al inicio...");
     }
 
-    private void limpiarCampos() {
-        nombreTextField.clear();
-        fechaIncioDatePicker.setValue(null);
-        fechaFinDatePicker.setValue(null);
-        ubicacionTextField.clear();
-        DescripciónTextField.clear();
+
+    public void onAnyadirButtonClick(ActionEvent actionEvent) {
     }
 
-    private void mostrarAlerta(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+    public void onGuardarButtonClick(ActionEvent actionEvent) {
+    }
+
+    public void onEliminarButtonClick(ActionEvent actionEvent) {
+    }
+
+    public void onEditarButtonClick(ActionEvent actionEvent) {
+
     }
 }
 

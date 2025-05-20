@@ -1,16 +1,14 @@
-package org.example.proyectointermodular.Mantenimiento;
+package org.example.proyectointermodular.Matenimiento;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.example.proyectointermodular.Objetos.Ventas;
+import org.example.proyectointermodular.Objetos.Estantes;
 
 import java.sql.*;
-import java.time.LocalDate;
 
-public class MantenimientoVentas {
+public class MantenimientoEstantes {
 
     public static Connection conectar(Connection conexion) {
-
         String host = "jdbc:mariadb://localhost:3306/";
         String usuario = "root";
         String psw = "";
@@ -37,24 +35,27 @@ public class MantenimientoVentas {
         }
     }
 
-    public static ObservableList<Ventas> consultar(Connection conexion) {
-        String query = "SELECT precioventa, fechaventa FROM ventas";
-        ObservableList<Ventas> listaVentas = FXCollections.observableArrayList();
+    public static ObservableList<Estantes> consultar(Connection conexion) {
+        String query = "SELECT * FROM stands";
+        ObservableList<Estantes> listaEstantes = FXCollections.observableArrayList();
 
         try (Statement stmt = conexion.createStatement();
              ResultSet resultado = stmt.executeQuery(query)) {
 
             while (resultado.next()) {
-                int precio = resultado.getInt("precio");
-                LocalDate fecha = resultado.getDate("fecha").toLocalDate();
+                String nombre = resultado.getString("nombre");
 
-                listaVentas.add(new Ventas(precio, fecha));
+                listaEstantes.add(new Estantes(nombre));
             }
 
         } catch (SQLException e) {
             System.err.println("Error en consulta: " + e.getMessage());
         }
 
-        return listaVentas;
+        return listaEstantes;
     }
+
+
+
+
 }

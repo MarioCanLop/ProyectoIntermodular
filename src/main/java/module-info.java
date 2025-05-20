@@ -16,4 +16,6 @@ module org.example.proyectointermodular {
 
     opens org.example.proyectointermodular to javafx.fxml;
     exports org.example.proyectointermodular;
+    exports org.example.proyectointermodular.Matenimiento;
+    opens org.example.proyectointermodular.Matenimiento to javafx.fxml;
 }

@@ -3,8 +3,10 @@ package org.example.proyectointermodular;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import org.example.proyectointermodular.Matenimiento.MantenimientoAsistentes;
 import org.example.proyectointermodular.Objetos.Asistentes;
 
 import java.io.IOException;
@@ -44,9 +46,8 @@ public class PantallaAsistentes {
 
     @FXML
     public void initialize() {
-        conexion = MantenimientoAsistentes.conectar();
+        conexion = MantenimientoAsistentes.conectar(conexion);
 
-        idTable.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(MantenimientoAsistentes.obtenerId(data.getValue())));
         nombreTable.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getNombre()));
         telefonoTable.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getTelefono()));
         emailTable.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getEmail()));
@@ -55,70 +56,21 @@ public class PantallaAsistentes {
     }
 
     @FXML
-    public void onAnyadirButtonClick() {
-        String nombre = nombreTextField.getText();
-        String telefono = telefonoTextField.getText();
-        String email = emailTextField.getText();
-
-        Asistentes asistente = new Asistentes(nombre, telefono, email);
-        MantenimientoAsistentes.insertar(conexion, asistente);
-
-        limpiarCampos();
-        tablaEstudiantes.setItems(MantenimientoAsistentes.consultar(conexion));
-    }
-
-    @FXML
-    public void onEditarButtonClick() {
-        Asistentes seleccionado = tablaEstudiantes.getSelectionModel().getSelectedItem();
-        if (seleccionado != null) {
-            anyadirButton.setDisable(true);
-            guardarButton.setDisable(false);
-
-            idSeleccionado = MantenimientoAsistentes.obtenerId(seleccionado);
-            nombreTextField.setText(seleccionado.getNombre());
-            telefonoTextField.setText(seleccionado.getTelefono());
-            emailTextField.setText(seleccionado.getEmail());
-        } else {
-            System.out.println("No hay asistente seleccionado.");
-        }
-    }
-
-    @FXML
-    public void onGuardarButtonClick() {
-        String nombre = nombreTextField.getText();
-        String telefono = telefonoTextField.getText();
-        String email = emailTextField.getText();
-
-        Asistentes asistente = new Asistentes(nombre, telefono, email);
-        MantenimientoAsistentes.modificar(conexion, asistente, idSeleccionado);
-
-        limpiarCampos();
-        anyadirButton.setDisable(false);
-        guardarButton.setDisable(true);
-        tablaEstudiantes.setItems(MantenimientoAsistentes.consultar(conexion));
-    }
-
-    @FXML
-    public void onEliminarButtonClick() {
-        Asistentes seleccionado = tablaEstudiantes.getSelectionModel().getSelectedItem();
-        if (seleccionado != null) {
-            MantenimientoAsistentes.borrar(conexion, seleccionado);
-            tablaEstudiantes.setItems(MantenimientoAsistentes.consultar(conexion));
-        } else {
-            System.out.println("No hay asistente seleccionado.");
-        }
-    }
-
-    private void limpiarCampos() {
-        nombreTextField.clear();
-        telefonoTextField.clear();
-        emailTextField.clear();
-    }
-
-    @FXML
-    public void buttonInicio() throws IOException {
-
+    protected void buttonInicio() throws IOException {
         HelloApplication.setRoot("hello-view");
+        System.out.println("Volviendo al inicio...");
+    }
+
+    public void onEditarButtonClick(ActionEvent actionEvent) {
+    }
+
+    public void onEliminarButtonClick(ActionEvent actionEvent) {
+    }
+
+    public void onAnyadirButtonClick(ActionEvent actionEvent) {
+    }
+
+    public void onGuardarButtonClick(ActionEvent actionEvent) {
 
     }
 }

@@ -2,12 +2,14 @@ package org.example.proyectointermodular;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import org.example.proyectointermodular.Matenimiento.MantenimientoVentas;
+import org.example.proyectointermodular.Matenimiento.MantenimientoFerias;
 import org.example.proyectointermodular.Objetos.Ventas;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.time.LocalDate;
 
 public class PantallaVentas {
@@ -32,109 +34,38 @@ public class PantallaVentas {
     @FXML
     private Button guardarButton;
 
-    private int idSeleccionado = -1;
+    private Connection conexion;
 
     @FXML
     public void initialize() {
-        // Configurar las columnas, aquí se asume que hay una clase MantenimientoVentas para CRUD
-        idTable.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(MantenimientoVentas.obtenerId(data.getValue())));
+
+        conexion = org.example.proyectointermodular.Mantenimiento.MantenimientoVentas.conectar(conexion);
+
         precioTable.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getPrecio()));
         fechaTable.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getFecha()));
 
         // Cargar datos a la tabla
-        tablaEstudiantes.setItems(MantenimientoVentas.consultar());
+        tablaEstudiantes.setItems(org.example.proyectointermodular.Mantenimiento.MantenimientoVentas.consultar(conexion));
     }
 
     @FXML
-    public void onAnyadirButtonClick() {
-        String precioStr = precioTextField.getText().trim();
-        LocalDate fecha = fechaDatePicker.getValue();
-
-        if (precioStr.isEmpty() || fecha == null) {
-            mostrarAlerta("Error", "Debe introducir precio y fecha.");
-            return;
-        }
-
-        int precio;
-        try {
-            precio = Integer.parseInt(precioStr);
-        } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "Precio debe ser un número entero.");
-            return;
-        }
-
-        Ventas venta = new Ventas(precio, fecha);
-        MantenimientoVentas.insertar(venta);
-
-        limpiarCampos();
-        tablaEstudiantes.setItems(MantenimientoVentas.consultar());
+    protected void buttonInicio() throws IOException {
+        HelloApplication.setRoot("hello-view");
+        System.out.println("Volviendo al inicio...");
     }
 
-    @FXML
-    public void onEditarButtonClick() {
-        Ventas seleccionado = tablaEstudiantes.getSelectionModel().getSelectedItem();
-        if (seleccionado != null) {
-            idSeleccionado = MantenimientoVentas.obtenerId(seleccionado);
 
-            precioTextField.setText(String.valueOf(seleccionado.getPrecio()));
-            fechaDatePicker.setValue(seleccionado.getFecha());
-
-            anyadirButton.setDisable(true);
-            guardarButton.setDisable(false);
-        }
+    public void onAnyadirButtonClick(ActionEvent actionEvent) {
     }
 
-    @FXML
-    public void onGuardarButtonClick() {
-        String precioStr = precioTextField.getText().trim();
-        LocalDate fecha = fechaDatePicker.getValue();
-
-        if (precioStr.isEmpty() || fecha == null) {
-            mostrarAlerta("Error", "Debe introducir precio y fecha.");
-            return;
-        }
-
-        int precio;
-        try {
-            precio = Integer.parseInt(precioStr);
-        } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "Precio debe ser un número entero.");
-            return;
-        }
-
-        Ventas venta = new Ventas(precio, fecha);
-        MantenimientoVentas.modificar(venta, idSeleccionado);
-
-        limpiarCampos();
-        anyadirButton.setDisable(false);
-        guardarButton.setDisable(true);
-        tablaEstudiantes.setItems(MantenimientoVentas.consultar());
+    public void onGuardarButtonClick(ActionEvent actionEvent) {
     }
 
-    @FXML
-    public void onEliminarButtonClick() {
-        Ventas seleccionado = tablaEstudiantes.getSelectionModel().getSelectedItem();
-        if (seleccionado != null) {
-            MantenimientoVentas.borrar(seleccionado);
-            tablaEstudiantes.setItems(MantenimientoVentas.consultar());
-        }
+    public void onEliminarButtonClick(ActionEvent actionEvent) {
     }
 
-    @FXML
-    public void buttonInicio() throws IOException {
-        HelloApplication.setRoot("hello-view");    }
+    public void onEditarButtonClick(ActionEvent actionEvent) {
 
-    private void limpiarCampos() {
-        precioTextField.clear();
-        fechaDatePicker.setValue(null);
-    }
-
-    private void mostrarAlerta(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
     }
 }
 
